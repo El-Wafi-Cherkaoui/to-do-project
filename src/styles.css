@@ -1,0 +1,85 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+body{
+    background-color: bisque;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#container{
+    border: 1px solid;
+    height: 95vh;
+    width: 95vw;
+    border-radius: 2vw;
+    overflow: hidden;
+    /* padding: 2vw; */
+    background-color: azure;
+
+    display: flex;
+}
+#container > * {
+    padding: 2vw;
+}
+.nav_side{
+    background-color: red;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.details{
+    background-color: aquamarine;
+    flex: 4;
+}
+fieldset{
+    padding: .8vh 1vw;
+    border-radius: 1vw;
+}
+legend{
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    padding: .2vw;
+}
+#container ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+#container li {
+}
+#container button{
+    padding: .5vh 1vw;
+    font-weight: bold;
+    border-radius: 1vw;
+    border: none;
+    box-shadow: .3vw .2vw .1vw;
+    width: 100%;
+}
+.notification{
+    background-color: aliceblue;
+    width: fit-content;
+    border-radius: 2vw;
+    overflow: hidden;
+    text-align: center;
+    position: absolute;
+    z-index: 50;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.notification h1{
+    background-color: red;
+    padding: 1vh 2vw;
+}
+.notification p{
+    padding: 1vh 2vw;
+}
+#project_form, #todo_form{
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}

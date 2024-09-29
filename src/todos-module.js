@@ -5,32 +5,38 @@ class Entity{
         this.priority = priority
         this.completed = completed
     }
-    todo_toggle_completion(){
+    todoToggleCompletion(){
         this.completed ? this.completed = false : this.completed = true
     }
-    increase_priority(){
+    increasePriority(){
         this.priority >= 3 ? 0 : this.priority += 1
     }
-    decrease_priority(){
+    decreasePriority(){
         this.priority == 0 ? 0 : this.priority -= 1
     }
 }
 class Todo extends Entity{
     constructor(title, description, dueDate, priority, note = '', completed = false,subtasks = [], project = 'default'){
         super(title, description, priority, completed)
-        this.dueDate = `${dueDate.getDate()}/0${dueDate.getMonth()+1}/${dueDate.getFullYear()}` 
+        // this.dueDate = `${dueDate.getDate()}/0${dueDate.getMonth()+1}/${dueDate.getFullYear()}`
+        this.dueDate = dueDate 
         this.note = note
         this.subtasks = subtasks
         this.project = project
     }
-    add_note(content){
+    addNote(content){
         this.note = content
     }
-    change_project(project){
-        this.project = project
+    changeProject(newProject){        
+        this.project = newProject
     }
-    add_subtask(new_sub){
-        this.subtasks.push(new_sub)
+    addSubtask(newSub){
+        this.subtasks.push(newSub)
+    }
+    removeSubtask(removedSub){
+        this.subtasks = this.subtasks.filter((sub)=>{
+            return sub != removedSub
+        })
     }
 }   
 
@@ -45,19 +51,51 @@ class Project extends Entity{
         super(title, description, priority, completed)
         this.todos = todos
     }
-    add_todo(todo){
+    addTodo(todo){
         this.todos.push(todo)
     }
+    removeTodo(removedTodo){
+        this.todos = this.todos.filter((todo)=>{
+            return todo != removedTodo
+        })
+    }
+    checkCompleted(){
+        let completed = true
+        this.todos.forEach(todo =>{
+            if(todo.completed == false){
+                completed = false
+            }
+        })
+        return completed
+        
+        
+    }
 }
+export {Project, Todo}
 let ch = new SubTask('finish HK', 'asd', 2)
 let today = new Date('2024-05-22')
-let todo_1 = new Todo('learn html', 'is markup language', today, 1, 'nothing', false) 
-
-todo_1.add_subtask(ch)
-// ch.todo_toggle_completion()
-// ch.decrease_priority()
-// console.log(todo_1);
 
 let p1 = new Project('school', 'asd', 1)
-p1.add_todo(todo_1)
-console.log(p1);    
+
+let p2 = new Project('work', 'working', 2)
+
+let todo_1 = new Todo('learn html', 'is markup language', today, 1, 'nothing', false, [], p1) 
+todo_1.addSubtask(ch)
+// todo_1.removeSubtask(ch)
+// console.log(todo_1);
+
+let todo_2 = new Todo('learn css', 'is styling language', today, 2, 'nothing', false, [], p1) 
+
+todo_1.addSubtask(ch)
+
+
+p1.addTodo(todo_1)
+p1.addTodo(todo_2)
+
+// p1.removeTodo(todo_1)
+// p1.removeTodo(todo_2)
+
+// todo_1.todoToggleCompletion()
+// todo_2.todoToggleCompletion()
+// console.log(p1.checkCompleted())
+
