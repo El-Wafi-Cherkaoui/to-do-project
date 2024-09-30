@@ -34,6 +34,7 @@ body{
 .details{
     background-color: aquamarine;
     flex: 4;
+    overflow: scroll;
 }
 fieldset{
     padding: .8vh 1vw;
@@ -82,4 +83,66 @@ legend{
     display: flex;
     flex-direction: column;
     gap: 1vh;
+}
+.project{
+    background-color: aliceblue;
+    margin: .5vh 1vw;
+    padding: 1vw;
+    border-radius: 1vw;
+}
+.project h1{
+    color:blueviolet;
+    font-family: 'Courier New', Courier, monospace;
+    text-decoration: underline;
+}
+.project .prj_desc{
+    font-size: .8rem;
+    opacity: .8;
+    display: none;
+}
+.project .todos{
+    margin: .2vh 1vw;
+    max-width: 80%;
+}
+.project .todos li{
+    padding: .2vw .6vw;
+    border: 1px solid;
+    border-radius: 1vw;
+    margin: .2vw 0vw;
+    display: flex;
+    align-items: center;
+}
+.todos input{
+    margin-right: .2vw;
+    transform: translateY(15%);
+}
+.todos i{
+    margin-left: auto;
+}
+.todos ul{
+    margin-left: auto;
+}
+.todo{
+    background-color: aliceblue;
+    border-radius: 1vw;
+    padding: 1vw;
+    /* display: flex; */
+    border-left: .5vw solid red;
+    margin: 1vw;
+    min-height: fit-content;
+}
+.todo h1{
+    text-decoration: underline;
+    padding: 1vw;
+}
+.todo h1, .todo i{
+    width: 50%;
+    display: inline;
+}
+.todo p{
+    /* margin-top: 2vh; */
+    padding: .5vh 2vw;
+}
+.subTasks{
+    padding: 1vh 5vw;
 }
