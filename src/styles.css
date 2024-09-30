@@ -52,7 +52,7 @@ legend{
 }
 #container li {
 }
-#container button{
+.nav_side button{
     padding: .5vh 1vw;
     font-weight: bold;
     border-radius: 1vw;
@@ -130,6 +130,7 @@ legend{
     border-left: .5vw solid red;
     margin: 1vw;
     min-height: fit-content;
+    position: relative;
 }
 .todo h1{
     text-decoration: underline;
@@ -143,6 +144,20 @@ legend{
     /* margin-top: 2vh; */
     padding: .5vh 2vw;
 }
+.todo input,
+.todo textarea,
+.todo select {
+    padding: .2vh .5vw;
+}
+
 .subTasks{
     padding: 1vh 5vw;
+}
+.modify_btn{
+    padding: .1vh .5vw;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-20%, 50%);
+    opacity: .8;
 }
