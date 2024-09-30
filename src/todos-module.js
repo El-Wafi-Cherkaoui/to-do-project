@@ -1,5 +1,6 @@
 class Entity{
     constructor(title, description, priority = 0, completed = false){
+        this.id = Math.floor(Math.random()*10000)
         this.title = title
         this.description = description
         this.priority = priority
@@ -38,6 +39,33 @@ class Todo extends Entity{
             return sub != removedSub
         })
     }
+    static todo_in_project(todo_id, project_t){
+        let response = {
+            changed : true,
+            todo : Todo.find_todo(todo_id)
+        }
+        Project.projects.forEach(prj=>{
+            if(prj.title == project_t){
+                prj.todos.forEach(todo=>{          
+                    if(todo.id == todo_id) {
+                        response.changed = false
+                    }
+                })
+            }
+        })
+        return response
+    }
+    static find_todo(id){
+        let response = false
+        Project.projects.forEach(prj=>{
+            prj.todos.forEach(todo=>{
+                if (todo.id == id){
+                    response = todo
+                }
+            })
+        })
+        return response
+    }
 }   
 
 class SubTask extends Entity{
@@ -47,12 +75,14 @@ class SubTask extends Entity{
 }
 
 class Project extends Entity{
+    static projects = []
     constructor(title, description, priority = 0, completed = false, todos = []){
         super(title, description, priority, completed)
         this.todos = todos
     }
     addTodo(todo){
         this.todos.push(todo)
+        todo.project = this.title
     }
     removeTodo(removedTodo){
         this.todos = this.todos.filter((todo)=>{
@@ -70,8 +100,17 @@ class Project extends Entity{
         
         
     }
+    static find_project(title){
+        let response = false
+        Project.projects.forEach(prj=>{
+            if (prj.title == title){
+                response = prj
+            }
+        })
+        return response
+    }
 }
-export {Project, Todo}
+export {Project, Todo, SubTask}
 let ch = new SubTask('finish HK', 'asd', 2)
 let today = new Date('2024-05-22')
 
