@@ -26,7 +26,6 @@ allTodosBtn.addEventListener('click', ()=>{
     Dom.refreshDetailsCont()
 
     Dom.showAllTodos()
-    console.log(Dom.projects);
     
 })
 // Dom.projectForm()
