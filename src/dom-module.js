@@ -154,7 +154,7 @@ class Dom{
             let todosList = document.createElement('ul')
             todosList.className = 'todos'
             todosList.id = prj.title
-            this.createList(prj.todos, todosList)
+            this.createList(prj.todos, todosList, false, 'todos')
             prjCont.append(todosList)
 
             
@@ -165,7 +165,18 @@ class Dom{
                 let subtasksUl = document.createElement('ul')
                 subtasks.forEach(sub=>{
                     let li = document.createElement('li')
-                    li.textContent = sub.title
+                    
+                    let checkBox = document.createElement('input')
+                    checkBox.type = 'checkbox'
+                    
+                    li.append(checkBox)
+                    Dom.completeSubtask(sub, checkBox, li)
+                    li.append(document.createTextNode(sub.title))
+                    
+                    if (sub.completed) {
+                        li.style.color = 'green'
+                        checkBox.checked = true
+                    }
                     subtasksUl.append(li)
                 }) 
                 li.append(subtasksUl)
@@ -174,9 +185,11 @@ class Dom{
         })
     }
     static showAllTodos(){
+        Dom.refreshDetailsCont()
         let todos = Dom.getAllTodos()
         todos.forEach(todo=>{
             let todoCont = document.createElement('div')
+            if(todo.completed) todoCont.style.borderColor = 'green'
             todoCont.className = 'todo'
             todoCont.dataset.todo = JSON.stringify(todo)
             Dom.modify_btn(todoCont)
@@ -200,7 +213,7 @@ class Dom{
             note.textContent = todo.note
 
             
-            this.createList(todo.subtasks, subTasks, true)
+            this.createList(todo.subtasks, subTasks, true, 'subs')
 
             todoCont.append(prj_title)
             todoCont.append(title)
@@ -216,11 +229,24 @@ class Dom{
                 // console.log(todo.subtasks);
                 
             }
+            let current_project = Project.find_project(todo.project)
+            let del_btn = document.createElement('button')
+            del_btn.textContent = 'Delete'
+            todoCont.append(del_btn)
+            del_btn.onclick = ()=> {
+                console.log(current_project.todos);
+                current_project.removeTodo(todo)
+                console.log(current_project.todos);
+                Dom.showAllTodos()
+            }
         })
     }
-    static createList(list, container, subTasks = false){
+    static createList(list, container, subTasks = false, type = ''){
         
         list.forEach(element=>{
+            
+            // if(type == 'subs')
+            
             let li = document.createElement('li')
             let checkBox = document.createElement('input')
             checkBox.type = 'checkbox'
@@ -228,6 +254,10 @@ class Dom{
             
             li.append(document.createTextNode(element.title))
 
+            if (element.completed) {
+                li.style.color = 'green'
+                checkBox.checked = true
+            }
             if(!subTasks){
 
                 let i = document.createElement('i')
@@ -243,11 +273,36 @@ class Dom{
             container.append(li)
 
             this.completeTodo(element, checkBox, li)
+
+            if(type == 'todos') {
+                // console.log(element);
+                element.check_subs()
+            }
+            else if(type == 'subs'){
+                element.check_parent_todo()
+            }
         })
     }
     static completeTodo(todo, checkboxInp, li){
         checkboxInp.addEventListener('change', ()=>{
             todo.todoToggleCompletion()
+            if(checkboxInp.checked){
+                li.style.color = 'green'
+            }
+            else{
+                li.style.color = 'black'
+            }
+            // Dom.showAllTodos()
+            // Dom.showAllProjects()
+            console.log(todo);
+            
+        })
+    }
+    static completeSubtask(subtask, checkboxInp, li){
+        let sub = SubTask.find_subtask(subtask.id)
+        
+        checkboxInp.addEventListener('change', ()=>{
+            sub.todoToggleCompletion()
             if(checkboxInp.checked){
                 li.style.color = 'green'
             }
@@ -303,20 +358,17 @@ class Dom{
         container.append(note)
         container.append(priority)
 
-        // let new_data = [title, date, desc, priority, note]
         container.append(submit_btn)
-        console.log(Project.projects);
 
         submit_btn.onclick = ()=>{
             Dom.apply_update(todo, project_select, title, date, desc, priority, note)
+            Dom.showAllTodos()
         }
     }
     static apply_update(todo, project, title, date, desc, priority, note){
         let todo_id = todo.id
         let response = Todo.todo_in_project(todo_id, project.value) 
-        if (response.changed){        
-            alert(' changed')
-            
+        if (response.changed){                    
             let old_todo_project = Project.find_project(response.todo.project)
             response.todo.changeProject(project.value)
             
@@ -325,19 +377,11 @@ class Dom{
             new_todo_project.addTodo(response.todo)
             old_todo_project.removeTodo(response.todo)            
         }
-        else {
-            alert('not changed')
-        }
         response.todo.title = title.value
         response.todo.date = date.value
         response.todo.description = desc.value
         response.todo.priority = priority.value
         response.todo.note =note.value
-        // console.log(response)
-        console.log(Project.projects);
-        
-        // console.log(project.value);
-        // console.log(todo.project == project.value);   
     }
     
     
