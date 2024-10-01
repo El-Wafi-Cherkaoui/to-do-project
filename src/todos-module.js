@@ -39,6 +39,20 @@ class Todo extends Entity{
             return sub != removedSub
         })
     }
+    complete_all_subs(){
+        this.subtasks.forEach((sub)=>{
+            sub.completed = true
+        })
+    }
+    check_subs(){
+        let all_subs_completed = true
+        this.subtasks.forEach((sub)=>{
+            if(sub.completed == false) all_subs_completed = false
+        })
+        if(all_subs_completed) this.completed = true
+        else this.completed = false
+        
+    }
     static todo_in_project(todo_id, project_t){
         let response = {
             changed : true,
@@ -71,6 +85,42 @@ class Todo extends Entity{
 class SubTask extends Entity{
     constructor(title, description, priority, completed = false){
         super(title, description, priority, completed)
+    }
+    static find_subtask(id){
+        let response = false
+        Project.projects.forEach(prj=>{
+            prj.todos.forEach(todo=>{
+                todo.subtasks.forEach(sub=>{
+                    if (sub.id == id){
+                        response = sub
+                    }
+                })
+            })
+        })
+        return response
+    }
+    static find_parent_todo(sub_title){
+        let parent_todo
+        Project.projects.forEach(prj=>{
+            prj.todos.forEach(todo=>{
+                todo.subtasks.forEach(sub=>{
+                    if(sub.title == sub_title){
+                        parent_todo = todo
+                    }
+                })
+            })
+        })
+        return parent_todo
+    }
+    check_parent_todo(){
+        let parent_todo = SubTask.find_parent_todo(this.title)
+
+        if(parent_todo.completed){
+            parent_todo.subtasks.forEach((sub)=>{
+                sub.completed = true
+            })
+        }
+        
     }
 }
 
