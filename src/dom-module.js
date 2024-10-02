@@ -1,5 +1,6 @@
 import { Project, SubTask, Todo } from "./todos-module";
 class Dom{
+    static current_page = ''
     static projects = []
     static detailsBox = document.querySelector('.details')
     static notification(title, content, color){
@@ -52,6 +53,7 @@ class Dom{
         })
     }
     static todoForm(){
+        Dom.current_page = 'todoForm'
         let form = document.createElement('form')
         form.id = 'todo_form'
         let labels = [
@@ -136,14 +138,20 @@ class Dom{
         return allTodos
     }
     static showAllProjects(){
+        Dom.current_page = 'all Projects'
         Dom.refreshDetailsCont()
         let projects = Project.projects
         projects.forEach(prj=>{
+            prj.checkCompleted()
+            
             let prjCont = document.createElement('div')
             prjCont.className = 'project'
 
             let title = document.createElement('h1')
             title.textContent = prj.title
+            if(prj.completed) {title.style.color = 'green'}
+            console.log(projects);
+            
             prjCont.append(title)
 
             let prj_desc = document.createElement('p')
@@ -154,6 +162,9 @@ class Dom{
             let todosList = document.createElement('ul')
             todosList.className = 'todos'
             todosList.id = prj.title
+            prj.todos.forEach(todo=>{
+                todo.check_subs()
+            })
             this.createList(prj.todos, todosList, false, 'todos')
             prjCont.append(todosList)
 
@@ -185,9 +196,13 @@ class Dom{
         })
     }
     static showAllTodos(){
+        Dom.current_page = 'all Todos'
         Dom.refreshDetailsCont()
         let todos = Dom.getAllTodos()
+        console.log(todos);
+        
         todos.forEach(todo=>{
+            todo.check_subs()
             let todoCont = document.createElement('div')
             if(todo.completed) todoCont.style.borderColor = 'green'
             todoCont.className = 'todo'
@@ -237,7 +252,7 @@ class Dom{
                 console.log(current_project.todos);
                 current_project.removeTodo(todo)
                 console.log(current_project.todos);
-                Dom.showAllTodos()
+                Dom.refresh()
             }
         })
     }
@@ -294,8 +309,8 @@ class Dom{
             }
             // Dom.showAllTodos()
             // Dom.showAllProjects()
-            console.log(todo);
-            
+            // console.log(todo);
+            Dom.refresh()
         })
     }
     static completeSubtask(subtask, checkboxInp, li){
@@ -309,7 +324,18 @@ class Dom{
             else{
                 li.style.color = 'black'
             }
+            Dom.refresh()
         })
+    }
+    static refresh(){
+        
+        if (Dom.current_page == 'all Todos'){
+            Dom.showAllTodos()
+        }
+        else if(Dom.current_page == 'all Projects'){
+            console.log(Dom.current_page);
+            Dom.showAllProjects()
+        }
     }
     static modify_btn(container){
         let modify_btn = document.createElement('button')
@@ -362,7 +388,7 @@ class Dom{
 
         submit_btn.onclick = ()=>{
             Dom.apply_update(todo, project_select, title, date, desc, priority, note)
-            Dom.showAllTodos()
+            Dom.refresh()
         }
     }
     static apply_update(todo, project, title, date, desc, priority, note){

@@ -146,7 +146,7 @@ class Project extends Entity{
                 completed = false
             }
         })
-        return completed
+        this.completed = completed
         
         
     }
